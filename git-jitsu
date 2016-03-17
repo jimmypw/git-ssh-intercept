@@ -13,7 +13,7 @@ COMMAND=$(echo ${SSH_ORIGINAL_COMMAND} | cut -d ' ' -f 1)
 
 case ${COMMAND} in
   git-receive-pack)
-    if [ "${1}" == "ro" ]; then 
+    if [ "${1}" != "rw" ]; then 
       exit 1
     fi
     ;;
