@@ -9,7 +9,7 @@ if [ -z "${SSH_ORIGINAL_COMMAND}" ]; then
 fi
 
 
-COMMAND=$(echo $SSH_ORIGINAL_COMMAND | cut -d ' ' -f 1)
+COMMAND=$(echo ${SSH_ORIGINAL_COMMAND} | cut -d ' ' -f 1)
 
 case ${COMMAND} in
   git-receive-pack)
@@ -24,7 +24,7 @@ case ${COMMAND} in
     ;;
 esac
 
-GITPATH=$(echo $SSH_ORIGINAL_COMMAND | cut -d ' ' -f 2 | sed s/\'//g)
+GITPATH=$(echo ${SSH_ORIGINAL_COMMAND} | cut -d ' ' -f 2 | sed s/\'//g)
 GITPATH="${REPO_ROOT}/${GITPATH}"
 
 realpath ${GITPATH} | grep -e "^${REPO_ROOT}" > /dev/null
@@ -33,4 +33,4 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-$COMMAND "$GITPATH" < /dev/stdin
+${COMMAND} "${GITPATH}" < /dev/stdin
