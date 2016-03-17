@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ -z ${SSH_ORIGINAL_COMMAND} ]; then
   # Attempting to start an interactive shell
   echo "Interactive shell now allowed"
@@ -22,4 +24,11 @@ esac
 
 GITPATH=$(echo $SSH_ORIGINAL_COMMAND | cut -d ' ' -f 2 | sed s/\'//g)
 GITPATH="/home/git/${GITPATH}"
+
+realpath ${GITPATH} | grep -e "^/home/git" > /dev/null
+if [ $? -ne 0 ]; then
+  echo "Requested path outside of allowed path"
+  exit 12
+fi
+
 $COMMAND "$GITPATH" < /dev/stdin
