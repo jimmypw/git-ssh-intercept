@@ -1,0 +1,25 @@
+if [ -z ${SSH_ORIGINAL_COMMAND} ]; then
+  # Attempting to start an interactive shell
+  echo "Interactive shell now allowed"
+  exit 10
+fi
+
+
+COMMAND=$(echo $SSH_ORIGINAL_COMMAND | cut -d ' ' -f 1)
+
+case ${COMMAND} in
+  git-receive-pack)
+    ;;
+  git-upload-archive)
+    ;;
+  git-upload-pack)
+    ;;
+  *)
+    echo "no."
+    exit 11
+    ;;
+esac
+
+GITPATH=$(echo $SSH_ORIGINAL_COMMAND | cut -d ' ' -f 2 | sed s/\'//g)
+GITPATH="/home/git/${GITPATH}"
+$COMMAND "$GITPATH" < /dev/stdin
