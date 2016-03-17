@@ -2,10 +2,10 @@
 
 REPO_ROOT='/home/git'
 
-if [ -z ${SSH_ORIGINAL_COMMAND} ]; then
+if [ -z "${SSH_ORIGINAL_COMMAND}" ]; then
   # Attempting to start an interactive shell
   echo "Interactive shell now allowed"
-  exit 10
+  exit 1
 fi
 
 
@@ -20,7 +20,7 @@ case ${COMMAND} in
     ;;
   *)
     echo "no."
-    exit 11
+    exit 1
     ;;
 esac
 
@@ -30,7 +30,7 @@ GITPATH="${REPO_ROOT}/${GITPATH}"
 realpath ${GITPATH} | grep -e "^${REPO_ROOT}" > /dev/null
 if [ $? -ne 0 ]; then
   echo "Requested path outside of allowed path"
-  exit 12
+  exit 1
 fi
 
 $COMMAND "$GITPATH" < /dev/stdin
