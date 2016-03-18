@@ -4,7 +4,7 @@ REPO_ROOT='/home/git'
 
 if [ -z "${SSH_ORIGINAL_COMMAND}" ]; then
   # Attempting to start an interactive shell
-  echo "Interactive shell now allowed"
+  echo "Interactive shell now allowed" 1>&2
   exit 1
 fi
 
@@ -23,7 +23,7 @@ case ${COMMAND} in
   git-upload-pack)
     ;;
   *)
-    echo "no."
+    echo "no." 1>&2
     exit 1
     ;;
 esac
@@ -33,7 +33,7 @@ GITPATH="${REPO_ROOT}/${GITPATH}"
 
 realpath ${GITPATH} | grep -e "^${REPO_ROOT}" > /dev/null
 if [ $? -ne 0 ]; then
-  echo "Requested path outside of allowed path"
+  echo "Requested path outside of allowed path" 1>&2
   exit 1
 fi
 
