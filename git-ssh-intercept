@@ -8,9 +8,8 @@ if [ -z "${SSH_ORIGINAL_COMMAND}" ]; then
   exit 1
 fi
 
-
+# Confirm the requested command is a command related to git
 COMMAND=$(echo ${SSH_ORIGINAL_COMMAND} | cut -d ' ' -f 1)
-
 case ${COMMAND} in
   git-receive-pack)
     if [ "${1}" != "rw" ]; then 
@@ -23,18 +22,23 @@ case ${COMMAND} in
   git-upload-pack)
     ;;
   *)
+    # Deny unrelated Commands
     echo "no." 1>&2
     exit 1
     ;;
 esac
 
+
+# Do some security to ensure the requested path does exist inside the 
+# REPO_ROOT defined by the administrator and that the user is now
+# Using ../../../../../repo_outside_root
 GITPATH=$(echo ${SSH_ORIGINAL_COMMAND} | cut -d ' ' -f 2 | sed s/\'//g)
 GITPATH="${REPO_ROOT}/${GITPATH}"
-
 realpath ${GITPATH} | grep -e "^${REPO_ROOT}" > /dev/null
 if [ $? -ne 0 ]; then
   echo "Requested path outside of allowed path" 1>&2
   exit 1
 fi
 
+# Assuming all checks passed run the original command.
 ${COMMAND} "${GITPATH}" < /dev/stdin
